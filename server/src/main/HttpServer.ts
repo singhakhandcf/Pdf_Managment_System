@@ -3,6 +3,7 @@ import http from "http";
 import path from 'path';
 import cors from 'cors';
 import connectToDatabase from "../config/db";
+import { UserController } from "../controllers/UserController";
 
 export class HttpServer {
   private app: Express;
@@ -43,7 +44,9 @@ export class HttpServer {
 
   // Route configuration
   private configureRoutes(): void {
+    const userController = new UserController();
 
+    this.app.use("/user",userController.router);
   }
 
   // Start the HTTP server
