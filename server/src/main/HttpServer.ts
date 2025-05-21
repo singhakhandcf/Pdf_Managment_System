@@ -4,6 +4,7 @@ import path from 'path';
 import cors from 'cors';
 import connectToDatabase from "../config/db";
 import { UserController } from "../controllers/UserController";
+import { PdfController } from "../controllers/PdfController";
 
 export class HttpServer {
   private app: Express;
@@ -45,8 +46,10 @@ export class HttpServer {
   // Route configuration
   private configureRoutes(): void {
     const userController = new UserController();
+    const pdfController = new PdfController();
 
     this.app.use("/user",userController.router);
+    this.app.use("/pdf",pdfController.router);
   }
 
   // Start the HTTP server

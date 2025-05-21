@@ -5,7 +5,7 @@ import { UserModel } from "../models/UserModel";
 
 dotenv.config();
 
-export const authenticateJWT=()=> async(req:Request,res:Response,next:NextFunction):Promise<any>=>{
+export const auth=()=> async(req:Request,res:Response,next:NextFunction):Promise<any>=>{
 
     const token =req.header("Authorization")?.startsWith("Bearer ")?req.header("Authorization")?.split(" ")[1]:undefined;
 

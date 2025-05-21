@@ -63,8 +63,8 @@ export class UserService{
                 apiResponseDto.responseCode=HttpStatus.NOT_FOUND;
                 return apiResponseDto;
             }
-            const hashedPassword=await bcrypt.hash(password,10);
-            if(User?.password!==hashedPassword){
+            const isMatch = await bcrypt.compare(password, User.password);
+            if(!isMatch){
                 apiResponseDto.status=ApiResponse.ERROR;
                 apiResponseDto.message="Wrong Password";
                 apiResponseDto.responseCode=HttpStatus.BAD_REQUEST;
