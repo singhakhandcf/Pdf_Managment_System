@@ -1,28 +1,33 @@
 import { useState } from "react";
-import  type {RegisterData} from "../types/auth";
-import API from "../services/api";
+import axios, { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
-import { AxiosError } from 'axios';
 
 const Register = () => {
-  const [formData, setFormData] = useState<RegisterData>({
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
   });
 
-  const navigate = useNavigate();
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await API.post("/auth/register", formData);
-      alert("Registered successfully!");
-      navigate("/login");
+      
+      const res = await axios.post(
+        
+        `${import.meta.env.VITE_BACKEND_URL}/user/register`,
+        formData
+      );
+      localStorage.setItem("token", res.data.token);
+      navigate("/dashboard");
     } catch (err) {
       const error = err as AxiosError<{ message: string }>;
       const errorMsg =
@@ -32,32 +37,58 @@ const Register = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ padding: "2rem" }}>
-      <h2>Register</h2>
-      <input
-        name="name"
-        placeholder="Name"
-        value={formData.name}
-        onChange={handleChange}
-        required
-      /><br /><br />
-      <input
-        name="email"
-        placeholder="Email"
-        value={formData.email}
-        onChange={handleChange}
-        required
-      /><br /><br />
-      <input
-        name="password"
-        placeholder="Password"
-        type="password"
-        value={formData.password}
-        onChange={handleChange}
-        required
-      /><br /><br />
-      <button type="submit">Register</button>
-    </form>
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-8 rounded-xl shadow-md w-96"
+      >
+        <h2 className="text-2xl font-semibold mb-4 text-center">Register</h2>
+
+        <input
+          type="text"
+          name="name"
+          placeholder="Name"
+          className="w-full mb-4 p-3 border rounded-lg focus:outline-none focus:ring"
+          value={formData.name}
+          onChange={handleChange}
+          required
+        />
+
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          className="w-full mb-4 p-3 border rounded-lg focus:outline-none focus:ring"
+          value={formData.email}
+          onChange={handleChange}
+          required
+        />
+
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          className="w-full mb-4 p-3 border rounded-lg focus:outline-none focus:ring"
+          value={formData.password}
+          onChange={handleChange}
+          required
+        />
+
+        <button
+          type="submit"
+          className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg font-semibold"
+        >
+          Register
+        </button>
+
+        <p className="mt-4 text-sm text-center">
+          Already have an account?{" "}
+          <a href="/login" className="text-green-600 underline">
+            Login
+          </a>
+        </p>
+      </form>
+    </div>
   );
 };
 

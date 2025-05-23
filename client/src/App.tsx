@@ -1,37 +1,26 @@
+// src/App.tsx
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
-import Register from "./pages/Register";
+import Upload from "./pages/Upload";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
-import ViewPDF from "./pages/ViewPDF";
+import PdfViewer from "./pages/ViewPDF";
 import MyPDFs from "./pages/MyPDFs";
-import Share from "./pages/Share";
-import SharedPdf from "./pages/SharedPdf";
-import PrivateRoute from "./utils/PrivateRoute";
-
-type AppProps = {
-  className?: string;
-};
 
 
-const App: React.FC<AppProps> = ({ className }) => {
+const App = () => {
   return (
-    <div className={className}>
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path="/register" element={<Register />} />
+      <Route path="/upload" element={<Upload />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
       <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/pdf/:id" element={<ViewPDF />} />
+      <Route path="/pdf/:id" element={<PdfViewer />} />
       <Route path="/mypdfs" element={<MyPDFs />} />
-      <Route path="/share" element={<Share />} />
-      <Route path="/shared/:token" element={<SharedPdf />} />
-      {/* <Route path="/upload" element={<PrivateRoute><Upload /></PrivateRoute>} /> */}
-      <Route path="/mypdfs" element={<PrivateRoute><MyPDFs /></PrivateRoute>} />
-      <Route path="/share" element={<PrivateRoute><Share /></PrivateRoute>} />
     </Routes>
-    </div>
   );
-}
+};
 
 export default App;

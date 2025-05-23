@@ -20,10 +20,10 @@ export class PdfController {
     private configureRoutes(): void {
         this.router.post('/upload', auth(), upload.single('file'), this.createPdf);
         this.router.get('/share/:pdfId', auth(), this.shareLink);
-        this.router.get('/public/:shareId', this.getPdfBylink);
+        this.router.get('/public/share/:shareId', this.getPdfBylink);
         this.router.post('/public/:shareId/comment', this.commentfromshareId);
-        this.router.get('/public/pdfs', this.getAllPdf);
-        this.router.get('/my-pdf', this.getMyPdf);
+        this.router.get('/public/pdfs',this.getAllPdf);
+        this.router.get('/mypdfs',auth(), this.getMyPdf);
         this.router.post('/pdf/:pdfId/comment/:commentId/reply', this.reply);
     }
 
@@ -125,14 +125,16 @@ export class PdfController {
     private getAllPdf = async (req: Request, res: Response): Promise<any> => {
         try {
             const page = parseInt(req.query.page as string) || 1;
-            const limit = parseInt(req.query.limit as string) || 1;
+            const limit = 10;
+            console.log(page);
+            console.log(limit);
             const skip = (page - 1) * limit;
             const pdfs = await Pdf.find({})
                 .sort({ createdAt: -1 })
                 .skip(skip)
                 .limit(limit);
 
-            return res.status(201).json({ data: pdfs });
+            return res.status(200).json({ data: pdfs });
 
         }
         catch (error) {
