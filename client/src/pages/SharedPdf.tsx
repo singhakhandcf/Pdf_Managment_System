@@ -1,85 +1,46 @@
-import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import API from "../services/api";
-import type { AxiosError } from "axios";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
-interface Comment {
-    name: string;
-    comment: string;
-}
-
-interface PdfData {
-    url: string;
-    comments: Comment[];
+interface Pdf {
+  title: string;
+  url: string;
+  ownerName: string;
 }
 
 const SharedPdf = () => {
-    const { token } = useParams();
-    const [pdf, setPdf] = useState<PdfData | null>(null);
-    const [newComment, setNewComment] = useState("");
-    const [name, setName] = useState("");
+  const { shareId } = useParams();
+  const [pdf, setPdf] = useState<Pdf | null>(null);
 
+  useEffect(() => {
     const fetchSharedPdf = async () => {
-        try {
-            const res = await API.get(`/pdf/shared/${token}`);
-            setPdf(res.data.pdf);
-        } catch (err) {
-            const error = err as AxiosError<{ message: string }>;
-      const errorMsg =
-        error.response?.data?.message || error.message || "Invalid or expired link!";
-      alert(errorMsg);
-        }
+      try {
+        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/pdf/shared/${shareId}`);
+        setPdf(res.data.pdf);
+      } catch (err) {
+        console.error("Error fetching shared PDF", err);
+      }
     };
 
-    const handleComment = async () => {
-        try {
-            await API.post(`/pdf/comment/${token}`, { name, comment: newComment });
-            setPdf((prev) =>
-                prev
-                    ? { ...prev, comments: [...prev.comments, { name, comment: newComment }] }
-                    : prev
-            );
-            setNewComment("");
-        } catch (err) {
-            const error = err as AxiosError<{ message: string }>;
-            const errorMsg =
-                error.response?.data?.message || error.message || "Failed to post comment";
-            alert(errorMsg);
-        }
-    };
+    fetchSharedPdf();
+  }, [shareId]);
 
-    useEffect(() => {
-        fetchSharedPdf();
-    }, []);
+  if (!pdf) return <div className="p-8 text-center">Loading...</div>;
 
-    if (!pdf) return <div>Loading...</div>;
-
-    return (
-        <div style={{ padding: "2rem" }}>
-            <h2>Shared PDF</h2>
-            <iframe src={pdf.url} width="100%" height="500px" title="PDF" />
-            <h3>Comments</h3>
-            {pdf.comments.map((c, i) => (
-                <p key={i}><strong>{c.name}:</strong> {c.comment}</p>
-            ))}
-
-            <div>
-                <input
-                    type="text"
-                    placeholder="Your name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                />
-                <textarea
-                    placeholder="Your comment"
-                    value={newComment}
-                    onChange={(e) => setNewComment(e.target.value)}
-                />
-                <br />
-                <button onClick={handleComment}>Post Comment</button>
-            </div>
-        </div>
-    );
+  return (
+    <div className="max-w-3xl mx-auto p-8">
+      <h1 className="text-3xl font-bold mb-4">{pdf.title}</h1>
+      <p className="text-gray-600 mb-2">Shared by: {pdf.ownerName}</p>
+      <a
+        href={pdf.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-blue-500 underline"
+      >
+        Open PDF
+      </a>
+    </div>
+  );
 };
 
 export default SharedPdf;

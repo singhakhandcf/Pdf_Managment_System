@@ -2,16 +2,23 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
-interface Comment {
+interface Reply {
   userName: string;
-  comment: string;
+  text: string;
+}
+
+interface Comment {
+  _id: string;
+  userName: string;
+  text: string;
+  replies?: Reply[];
 }
 
 interface Pdf {
   _id: string;
   title: string;
   url: string;
-  uploadedBy: string;
+  ownerName: string;
   comments: Comment[];
 }
 
@@ -19,12 +26,13 @@ const PdfViewer = () => {
   const { id } = useParams<{ id: string }>();
   const [pdf, setPdf] = useState<Pdf | null>(null);
   const [newComment, setNewComment] = useState("");
+  const [replyTexts, setReplyTexts] = useState<string[]>([]);
   const token = localStorage.getItem("token");
 
   const fetchPdf = async () => {
     try {
       const res = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/api/pdf/${id}`,
+        `${import.meta.env.VITE_BACKEND_URL}/pdf/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -32,6 +40,7 @@ const PdfViewer = () => {
         }
       );
       setPdf(res.data.pdf);
+      setReplyTexts(Array(res.data.pdf.comments.length).fill(""));
     } catch (err) {
       console.error("Failed to load PDF", err);
     }
@@ -42,7 +51,7 @@ const PdfViewer = () => {
 
     try {
       const res = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/pdf/${id}/comment`,
+        `${import.meta.env.VITE_BACKEND_URL}/pdf/${id}/comment`,
         { comment: newComment },
         {
           headers: {
@@ -51,11 +60,37 @@ const PdfViewer = () => {
         }
       );
 
-      // Refresh PDF data
-      setPdf(prev => prev ? { ...prev, comments: res.data.comments } : prev);
+      setPdf(prev => prev ? { ...prev, comments: res.data.pdf.comments } : prev);
       setNewComment("");
+      setReplyTexts(Array(res.data.pdf.comments.length).fill(""));
     } catch (err) {
       console.error("Failed to add comment", err);
+    }
+  };
+
+  const handleReplySubmit = async (commentId:string,commentIndex: number) => {
+    const reply = replyTexts[commentIndex];
+    if (!reply.trim()) return;
+
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/pdf/${id}/comment/${commentId}/reply`,
+        { text: reply }, 
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setPdf(res.data.pdf);
+      setReplyTexts(prev => {
+        const updated = [...prev];
+        updated[commentIndex] = "";
+        return updated;
+      });
+    } catch (err) {
+      console.error("Failed to add reply", err);
     }
   };
 
@@ -81,9 +116,44 @@ const PdfViewer = () => {
       <div className="space-y-3 mb-6">
         {pdf.comments.length > 0 ? (
           pdf.comments.map((c, idx) => (
-            <div key={idx} className="border p-2 rounded bg-gray-50">
+            <div key={idx} className="border p-2 rounded bg-gray-50 space-y-2">
               <p className="font-medium">{c.userName}</p>
-              <p className="text-gray-700">{c.comment}</p>
+              <p className="text-gray-700">{c.text}</p>
+
+              {/* Replies */}
+              {c.replies && c.replies.length > 0 && (
+                <div className="ml-4 mt-2 space-y-1">
+                  {c.replies.map((r, i) => (
+                    <div key={i} className="border-l-2 pl-2 text-sm text-gray-800">
+                      <p className="font-semibold">{r.userName}</p>
+                      <p>{r.text}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Reply box */}
+              {token && (
+                <div className="ml-4">
+                  <textarea
+                    value={replyTexts[idx] || ""}
+                    onChange={e => {
+                      const updated = [...replyTexts];
+                      updated[idx] = e.target.value;
+                      setReplyTexts(updated);
+                    }}
+                    className="w-full p-1 border rounded text-sm"
+                    rows={2}
+                    placeholder="Reply..."
+                  />
+                  <button
+                    onClick={() => handleReplySubmit(c._id,idx)}
+                    className="mt-1 text-sm px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  >
+                    Reply
+                  </button>
+                </div>
+              )}
             </div>
           ))
         ) : (
@@ -91,6 +161,7 @@ const PdfViewer = () => {
         )}
       </div>
 
+      {/* Comment box */}
       {token && (
         <div className="space-y-2">
           <textarea

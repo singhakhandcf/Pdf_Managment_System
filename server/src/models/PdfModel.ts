@@ -19,6 +19,7 @@ export interface IPdf extends Document {
   title: string;
   url: string;
   owner: mongoose.Types.ObjectId;
+  ownerName:string;
   comments: IComment[];
   sharedWith: string[]; // emails or user IDs
   shareId:string;
@@ -47,6 +48,7 @@ const pdfSchema = new Schema<IPdf>(
     title: { type: String, required: true },
     url: { type: String, required: true },
     owner: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    ownerName: { type: String, required: true },
     comments: [commentSchema],
     sharedWith: [{ type: String }],
     shareId:{ type: String,  default: () => crypto.randomBytes(12).toString('hex') },

@@ -7,6 +7,8 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import PdfViewer from "./pages/ViewPDF";
 import MyPDFs from "./pages/MyPDFs";
+import SharedPdf from "./pages/SharedPdf";
+import InvitedPdfViewer from "./pages/InvitedPdfViewer";
 
 
 const App = () => {
@@ -19,6 +21,9 @@ const App = () => {
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/pdf/:id" element={<PdfViewer />} />
       <Route path="/mypdfs" element={<MyPDFs />} />
+      <Route path="/pdf/share/:shareId" element={<SharedPdf />} />
+      <Route path="/shared/:shareId" element={<InvitedPdfViewer />} />
+
     </Routes>
   );
 };

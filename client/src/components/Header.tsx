@@ -12,8 +12,6 @@ const Header = () => {
   const menuRef = useRef<HTMLDivElement>(null);
   const authRef = useRef<HTMLDivElement>(null);
 
-  console.log("token is",token);
-
   useEffect(() => {
     const name = localStorage.getItem("name");
     if (token && name) {
@@ -61,6 +59,15 @@ const Header = () => {
     }
   };
 
+  const handleDashboardClick=()=>{
+    if(token){
+      navigate("/dashboard")
+    }
+    else{
+      setShowAuthOptions(true);
+    }
+  }
+
   return (
     <header className="bg-blue-700 text-white px-6 py-4 flex justify-between items-center shadow relative z-50">
       <Link to="/" className="text-2xl font-bold">
@@ -102,9 +109,15 @@ const Header = () => {
         </div>
 
         {/* 🔗 Dashboard link */}
-        <Link to="/dashboard" className="hover:underline">
+        {/* <Link to="/dashboard" className="hover:underline">
           Dashboard
-        </Link>
+        </Link> */}
+        <button
+          onClick={handleDashboardClick}
+          className="flex items-center gap-1 hover:underline"
+        >
+          Dashboard
+        </button>
 
         {/* ⬆ Upload Icon Button */}
         <button
