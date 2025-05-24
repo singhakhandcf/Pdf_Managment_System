@@ -14,8 +14,10 @@ const Login = () => {
         email,
         password,
       });
-      localStorage.setItem("token", res.data.token);
-      navigate("/dashboard");
+      console.log(res.data.data,"login")
+      localStorage.setItem("token", res.data.data.token);
+      localStorage.setItem("name", res.data.data.name);
+      navigate("/");
     } catch (err) {
       const error = err as AxiosError<{ message: string }>;
       const errorMsg =

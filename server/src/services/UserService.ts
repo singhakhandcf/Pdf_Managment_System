@@ -34,7 +34,8 @@ export class UserService{
             apiResponseDto.responseCode=HttpStatus.CREATED;
             apiResponseDto.data={
                 "token":token,
-                "data":newUser
+                "data":newUser,
+                "name":newUser.name
             }
             return apiResponseDto;
         }
@@ -76,7 +77,8 @@ export class UserService{
             apiResponseDto.responseCode=HttpStatus.CREATED;
             apiResponseDto.data={
                 "token":token,
-                "data":User
+                "data":User,
+                "name":User.name
             }
             return apiResponseDto;
         }

@@ -49,7 +49,7 @@ const pdfSchema = new Schema<IPdf>(
     owner: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     comments: [commentSchema],
     sharedWith: [{ type: String }],
-    shareId:{ type: String, unique: true, default: () => crypto.randomBytes(12).toString('hex') },
+    shareId:{ type: String,  default: () => crypto.randomBytes(12).toString('hex') },
   },
   { timestamps: true }
 );

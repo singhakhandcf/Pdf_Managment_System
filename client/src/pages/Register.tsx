@@ -26,8 +26,10 @@ const Register = () => {
         `${import.meta.env.VITE_BACKEND_URL}/user/register`,
         formData
       );
+      //console.log(res.data,"registraion")
       localStorage.setItem("token", res.data.token);
-      navigate("/dashboard");
+      localStorage.setItem("name", res.data.data.name);
+      navigate("/");
     } catch (err) {
       const error = err as AxiosError<{ message: string }>;
       const errorMsg =

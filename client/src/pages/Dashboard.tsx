@@ -1,7 +1,6 @@
-// src/pages/Dashboard.tsx
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 
 interface Comment {
   userName: string;
@@ -21,6 +20,7 @@ const Dashboard = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const token = localStorage.getItem("token");
+  const navigate = useNavigate();
 
   const fetchPDFs = async () => {
     try {
@@ -32,6 +32,8 @@ const Dashboard = () => {
           },
         }
       );
+      console.log("API response:", res.data);
+
       setPdfs(res.data.pdfs);
       setTotalPages(res.data.totalPages);
     } catch (err) {
@@ -51,50 +53,65 @@ const Dashboard = () => {
     if (page > 1) setPage(prev => prev - 1);
   };
 
-  return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6 text-center">All PDFs</h1>
+  const handleView = (id: string) => {
+    if (token) {
+      navigate(`/pdf/${id}`);
+    } else {
+      navigate("/login");
+    }
+  };
 
-      <div className="space-y-4">
-        {pdfs.map(pdf => (
-          <div key={pdf._id} className="p-4 border rounded shadow-sm hover:shadow transition">
-            <h2 className="text-lg font-semibold">{pdf.title}</h2>
+  return (
+    <div className="max-w-6xl mx-auto px-6 py-10">
+      <h1 className="text-4xl font-bold text-center text-blue-700 mb-10">
+        🌍 Public PDF Library
+      </h1>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {Array.isArray(pdfs) && pdfs.map(pdf => (
+          <div
+            key={pdf._id}
+            className="bg-white rounded-xl shadow-md p-6 hover:shadow-xl transition"
+          >
+            <h2 className="text-xl font-semibold text-gray-800 mb-2">{pdf.title}</h2>
             <a
               href={pdf.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-500 underline block mb-1"
+              className="text-blue-500 underline text-sm"
             >
-              Open in new tab
+              Open PDF in new tab
             </a>
-            <Link
-              to={`/pdf/${pdf._id}`}
-              className="text-sm text-white bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded inline-block"
+            <p className="text-gray-600 mt-2 text-sm">
+              Uploaded by: <span className="font-medium">{pdf.uploadedBy}</span>
+            </p>
+
+            <button
+              onClick={() => handleView(pdf._id)}
+              className="mt-4 inline-block bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded"
             >
               View Details & Comments
-            </Link>
-            <p className="text-sm text-gray-600 mt-2">
-              Uploaded by: {pdf.uploadedBy}
-            </p>
+            </button>
           </div>
         ))}
       </div>
 
-      <div className="mt-6 flex justify-between">
+      {/* Pagination Controls */}
+      <div className="flex justify-center items-center gap-6 mt-10">
         <button
           onClick={handlePrev}
           disabled={page === 1}
-          className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+          className="px-4 py-2 bg-gray-200 rounded text-sm disabled:opacity-50"
         >
-          Previous
+          ⬅️ Previous
         </button>
-        <span className="px-4 py-2 text-gray-700">Page {page}</span>
+        <span className="text-gray-700 font-medium">Page {page} of {totalPages}</span>
         <button
           onClick={handleNext}
           disabled={page === totalPages}
-          className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+          className="px-4 py-2 bg-gray-200 rounded text-sm disabled:opacity-50"
         >
-          Next
+          Next ➡️
         </button>
       </div>
     </div>
