@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios, { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -20,9 +21,9 @@ const Register = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      
+
       const res = await axios.post(
-        
+
         `${import.meta.env.VITE_BACKEND_URL}/user/register`,
         formData
       );
@@ -82,13 +83,14 @@ const Register = () => {
         >
           Register
         </button>
-
         <p className="mt-4 text-sm text-center">
           Already have an account?{" "}
-          <a href="/login" className="text-green-600 underline">
+          <Link to="/login" className="text-green-600 underline">
             Login
-          </a>
+          </Link>
         </p>
+
+
       </form>
     </div>
   );

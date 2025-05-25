@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios, { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -37,7 +38,7 @@ const Login = () => {
         `${import.meta.env.VITE_BACKEND_URL}/user/forgot-password`,
         { email }
       );
-      console.log(res.status,"status");
+      console.log(res.status, "status");
 
       // Assuming response contains success status and maybe userId or temp token
       alert("OTP has been sent to your email.");
@@ -92,10 +93,11 @@ const Login = () => {
 
         <p className="mt-4 text-sm text-center">
           Don’t have an account?{" "}
-          <a href="/register" className="text-blue-600 underline">
+          <Link to="/register" className="text-blue-600 underline">
             Register
-          </a>
+          </Link>
         </p>
+
       </form>
     </div>
   );
