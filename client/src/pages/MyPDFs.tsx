@@ -128,9 +128,13 @@ const MyPdfs = () => {
     <div
       className="min-h-screen bg-gradient-to-br from-blue-100 to-purple-200 relative overflow-hidden"
       style={{
-        backgroundImage: 'url("https://www.transparenttextures.com/patterns/cubes.png")',
+        backgroundImage: `
+    linear-gradient(to right top, #e0f7fa, #e1f5fe),
+    url("https://www.transparenttextures.com/patterns/geometry2.png")
+  `,
         backgroundRepeat: "repeat",
-        backgroundSize: "auto",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
       }}
     >
 
@@ -138,39 +142,39 @@ const MyPdfs = () => {
         <div className="flex justify-end mb-4 relative">
           <div className="flex justify-end mb-4">
             <div className="relative flex items-center" ref={dropdownRef}>
-  <button
-    onClick={() => setShowDropdown((prev) => !prev)}
-    className="bg-white text-blue-600 font-medium px-4 py-2 rounded-lg shadow-md hover:bg-blue-50 transition flex items-center"
-  >
-    👤 {userName}
-    <svg
-      className="w-4 h-4 ml-2"
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 20 20"
-      fill="currentColor"
-    >
-      <path
-        fillRule="evenodd"
-        d="M5.23 7.21a.75.75 0 011.06.02L10 11.585l3.71-4.355a.75.75 0 011.14.976l-4.25 5a.75.75 0 01-1.14 0l-4.25-5a.75.75 0 01.02-1.06z"
-        clipRule="evenodd"
-      />
-    </svg>
-  </button>
+              <button
+                onClick={() => setShowDropdown((prev) => !prev)}
+                className="bg-white text-blue-600 font-medium px-4 py-2 rounded-lg shadow-md hover:bg-blue-50 transition flex items-center"
+              >
+                👤 {userName}
+                <svg
+                  className="w-4 h-4 ml-2"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M5.23 7.21a.75.75 0 011.06.02L10 11.585l3.71-4.355a.75.75 0 011.14.976l-4.25 5a.75.75 0 01-1.14 0l-4.25-5a.75.75 0 01.02-1.06z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </button>
 
-  {showDropdown && (
-    <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 w-32 bg-white rounded-lg shadow-lg z-10 text-sm">
-      <button
-        onClick={() => {
-          localStorage.clear();
-          navigate("/");
-        }}
-        className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-      >
-        🚪 Logout
-      </button>
-    </div>
-  )}
-</div>
+              {showDropdown && (
+                <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 w-32 bg-white rounded-lg shadow-lg z-10 text-sm">
+                  <button
+                    onClick={() => {
+                      localStorage.clear();
+                      navigate("/");
+                    }}
+                    className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                  >
+                    🚪 Logout
+                  </button>
+                </div>
+              )}
+            </div>
 
           </div>
 

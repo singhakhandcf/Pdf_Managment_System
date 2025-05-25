@@ -129,9 +129,13 @@ const Dashboard = () => {
     <div
       className="min-h-screen bg-gradient-to-br from-blue-100 to-purple-200 relative overflow-hidden"
       style={{
-        backgroundImage: 'url("https://www.transparenttextures.com/patterns/cubes.png")',
+        backgroundImage: `
+    linear-gradient(to right top, #e0f7fa, #e1f5fe),
+    url("https://www.transparenttextures.com/patterns/geometry2.png")
+  `,
         backgroundRepeat: "repeat",
-        backgroundSize: "auto",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
       }}
     >
 

@@ -9,6 +9,8 @@ import PdfViewer from "./pages/ViewPDF";
 import MyPDFs from "./pages/MyPDFs";
 import SharedPdf from "./pages/SharedPdf";
 import InvitedPdfViewer from "./pages/InvitedPdfViewer";
+import OtpPage from "./pages/OtpPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 
 
 const App = () => {
@@ -23,7 +25,8 @@ const App = () => {
       <Route path="/mypdfs" element={<MyPDFs />} />
       <Route path="/pdf/share/:shareId" element={<SharedPdf />} />
       <Route path="/shared/:shareId" element={<InvitedPdfViewer />} />
-
+      <Route path="/verify-otp" element={<OtpPage />} />
+      <Route path="/reset-password" element={<ResetPasswordPage />} />
     </Routes>
   );
 };
